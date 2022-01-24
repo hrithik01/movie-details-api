@@ -8,18 +8,19 @@ export class ResponseBody {
     }
   }
 
+const headers = {
+  'x-rapidapi-host': process.env.API_HOST,
+  'x-rapidapi-key': process.env.API_KEY
+}
+const URL = process.env.REQ_URL
+
 export async function searchMovieDB (request, response) {
     const { query: { title } } = await request
     const options = {
-      method: 'GET',
-      url: process.env.REQ_URL,
       params: {s: title, page: '1', r: 'json'},
-      headers: {
-        'x-rapidapi-host': process.env.API_HOST,
-        'x-rapidapi-key': process.env.API_KEY
-      }
+      headers: headers
     }
-    const { data } = await axios(options)
+    const { data } = await axios.get(URL, options)
     if (data.Error) {
       const errorBody = new ResponseBody(404, 'No data found', data)
       console.log(errorBody.message + ' for ' + title)
@@ -34,15 +35,10 @@ export async function searchMovieDB (request, response) {
 export async function searchTitleDB (request, response) {
   const { id } = await request.params
   const options = {
-    method: 'GET',
-    url: process.env.REQ_URL,
     params: {i: id, r: 'json'},
-    headers: {
-      'x-rapidapi-host': process.env.API_HOST,
-      'x-rapidapi-key': process.env.API_KEY
-    }
+    headers: headers
   }
-  const { data } = await axios(options)
+  const { data } = await axios.get(URL, options)
   if (data.Error) {
     const errorBody = new ResponseBody(404, 'No data found', data)
     console.log(errorBody.message + ' for ' + id)
